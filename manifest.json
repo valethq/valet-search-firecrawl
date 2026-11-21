@@ -7,66 +7,121 @@
   "repository": "https://github.com/valethq/valet-search-firecrawl",
   "valet": "^0.1.0",
   "main": "./src/index.ts",
-  "provides": ["tools@1", "settings@1"],
-  "configSchema": {
-    "type": "object",
-    "additionalProperties": false,
-    "x-group": "tools",
-    "x-icon": "search",
-    "properties": {
-      "secret": {
-        "type": "string",
-        "title": "API key secret",
-        "description": "Secret name (~/.valet/secrets/<name>, then env <NAME>).",
-        "default": "firecrawl_api_key",
-        "x-widget": "secret"
-      },
-      "baseUrl": {
-        "type": "string",
-        "title": "Base URL",
-        "description": "Firecrawl API base URL (include /v2). Override for tests or a proxy.",
-        "default": "https://api.firecrawl.dev/v2",
-        "x-advanced": true
-      },
-      "mode": {
-        "type": "string",
-        "title": "Mode",
-        "description": "Which index web_search_firecrawl queries.",
-        "enum": ["web", "news"],
-        "enumNames": ["Web", "News"],
-        "default": "web"
-      },
-      "numResults": {
-        "type": "integer",
-        "title": "Results per search",
-        "description": "Default number of hits web_search_firecrawl returns.",
-        "default": 8,
-        "minimum": 1,
-        "maximum": 20
-      },
-      "maxCharacters": {
-        "type": "integer",
-        "title": "Excerpt characters",
-        "description": "Per result. web_fetch_firecrawl uses four times this.",
-        "default": 2000,
-        "minimum": 100,
-        "maximum": 50000
-      },
-      "timeoutMs": {
-        "type": "integer",
-        "title": "Timeout (ms)",
-        "description": "Per-request timeout for search and fetch.",
-        "default": 30000,
-        "minimum": 1000,
-        "maximum": 300000
-      },
-      "minRole": {
-        "type": "string",
-        "title": "Lowest role with access",
-        "description": "Runs below this role do not see the tools.",
-        "enum": ["owner", "trusted", "guest"],
-        "enumNames": ["Owner only", "Trusted and owner", "Everyone"],
-        "default": "trusted"
+  "provides": ["tools@1"],
+  "settings": {
+    "sections": {
+      "tools": {
+        "subsections": [
+          {
+            "id": "search",
+            "label": "Search",
+            "items": [
+              {
+                "id": "apiKey",
+                "label": "API key",
+                "summary": "Stored as a valet secret; the default reads ~/.valet/secrets/firecrawl_api_key or $FIRECRAWL_API_KEY.",
+                "input": {
+                  "type": "secret",
+                  "default": "${secret:firecrawl_api_key}"
+                },
+                "migrate": [
+                  {
+                    "from": "secret",
+                    "map": {
+                      "template": "${secret:{}}"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "baseUrl",
+                "label": "Base URL",
+                "summary": "Firecrawl API base URL (include /v2). Override for tests or a proxy.",
+                "input": {
+                  "type": "string",
+                  "default": "https://api.firecrawl.dev/v2"
+                },
+                "advanced": true
+              },
+              {
+                "id": "mode",
+                "label": "Mode",
+                "summary": "Which index web_search_firecrawl queries.",
+                "input": {
+                  "type": "select",
+                  "options": [
+                    {
+                      "value": "web",
+                      "label": "Web"
+                    },
+                    {
+                      "value": "news",
+                      "label": "News"
+                    }
+                  ],
+                  "default": "web"
+                }
+              },
+              {
+                "id": "numResults",
+                "label": "Results per search",
+                "summary": "Default number of hits web_search_firecrawl returns.",
+                "input": {
+                  "type": "int",
+                  "min": 1,
+                  "max": 20,
+                  "default": 8
+                }
+              },
+              {
+                "id": "maxCharacters",
+                "label": "Excerpt characters",
+                "summary": "Per result. web_fetch_firecrawl uses four times this.",
+                "input": {
+                  "type": "int",
+                  "min": 100,
+                  "max": 50000,
+                  "default": 2000
+                }
+              },
+              {
+                "id": "timeoutMs",
+                "label": "Timeout (ms)",
+                "summary": "Per-request timeout for search and fetch.",
+                "input": {
+                  "type": "duration",
+                  "min": 1000,
+                  "max": 300000,
+                  "default": 30000
+                }
+              },
+              {
+                "id": "minRole",
+                "label": "Lowest role with access",
+                "summary": "Runs below this role do not see the tools.",
+                "input": {
+                  "type": "select",
+                  "options": [
+                    {
+                      "value": "owner",
+                      "label": "Owner only"
+                    },
+                    {
+                      "value": "trusted",
+                      "label": "Trusted and owner"
+                    },
+                    {
+                      "value": "guest",
+                      "label": "Everyone"
+                    }
+                  ],
+                  "default": "trusted"
+                }
+              }
+            ]
+          }
+        ],
+        "icon": "search"
       }
     }
   }

@@ -43,7 +43,7 @@ export function makeHttp(o: HttpOptions): Http {
       if (!key && !o.provider.keyless) {
         const name = o.secret();
         throw new ProviderError(
-          `no ${label} API key: put it in ~/.valet/secrets/${name} (mode 0600) or set ${name.toUpperCase()}`,
+          `no ${label} API key: add it in Settings, or put it in ~/.valet/secrets/${name} (mode 0600) or set ${name.toUpperCase()}`,
         );
       }
       let res: Response;
